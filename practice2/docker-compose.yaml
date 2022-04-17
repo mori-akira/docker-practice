@@ -1,0 +1,6 @@
+version: "3"
+services:
+  runner:
+    build: .
+    volumes:
+     - C:\dev\docker_sample:/docker_sample
