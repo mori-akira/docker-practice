@@ -147,3 +147,54 @@ Key-Valueでデータを保存し、複雑の種類のデータも扱える。
 
 ## practice2 -  Spring boot Runnerアプリを作成し、コンテナ化・ホストとの接続を確認
 
+###ソース
+> https://github.com/mori-akira/docker-practice/tree/main/practice2
+
+### 概要
+次の構成でファイルを作成する。
+#### ディレクトリ構成
+<pre>
+practice1 ┳ src/
+          ┣ jar/
+          ┣ Dockerfile
+          ┣ docker-compose.yml
+          ┗ pom.xml
+</pre>
+
+#### src/
+Spring bootで処理を記述する。
+
+#### jar/
+処理をjarにパッケージしたものを格納する。
+今回は`docker_practice2-0.0.1-SNAPSHOT.jar`が格納されている。
+
+#### Dockerfile
+Dockerイメージを構築する。
+<pre>
+FROM openjdk:11
+ADD ./jar /code
+WORKDIR /code
+</pre>
+* 今回は、`openjdk:11`イメージをレジストリから取得し、イメージを構築する。
+* jarディレクトリ下をイメージ内の`/code`ディレクトリに配置する。
+
+#### docker-compose.yml
+サービスを定義する。
+<pre>
+version: "3"
+services:
+  runner:
+    build: .
+    volumes:
+     - C:\dev\docker_sample:/docker_sample
+</pre>
+* ローカルの作業ディレクトリ`C:\dev\docker_sample`を`/docker_sample`にマウントする。
+
+#### pom.xml
+mavenプロジェクトを設定する。
+
+### サービスの起動と実行
+次のコマンドで実行可能である。
+<pre>
+docker-compose run runner java -jar docker_practice2-0.0.1-SNAPSHOT.jar "src=/dev/docker_sample/practice2/data" "generateNum=20"
+</pre>
